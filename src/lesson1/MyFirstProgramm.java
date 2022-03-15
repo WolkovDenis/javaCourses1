@@ -3,7 +3,7 @@ package lesson1;
 public class MyFirstProgramm {
     public static void main(String[] args) {
         int sum = 1000;
-        int pizza = 230;
+        int pizza = 233;
         int gum = 25;
         double candy = 2.5;
 
