@@ -1,4 +1,4 @@
-package lesson16;
+package lesson16log4j.xml;
 
 import org.apache.log4j.Logger;
 

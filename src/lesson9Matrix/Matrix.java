@@ -1,15 +1,16 @@
 package lesson9Matrix;
 
-public class Matrix implements IMatrix{
+public class Matrix implements IMatrix {
 
     private double[][] numbers;
 
-    public Matrix(int rows,int cols){
-      numbers = new double[rows][cols];
+
+    public Matrix(int rows, int cols) {
+        numbers = new double[rows][cols];
     }
 
-    public Matrix(double[][] numbers){
-        this.numbers=numbers;
+    public Matrix(double[][] numbers) {
+        this.numbers = numbers;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class Matrix implements IMatrix{
         if (this.getRows() != otherMatrix.getRows()) {
             throw new IllegalArgumentException("Не совместимое кол-во строк");
         }
-        if (this.getColumns() != otherMatrix.getColumns()){
+        if (this.getColumns() != otherMatrix.getColumns()) {
             throw new IllegalArgumentException("Не совместимое кол-во столбцов");
         }
         if (otherMatrix == null) {
@@ -72,7 +73,7 @@ public class Matrix implements IMatrix{
         if (this.getRows() != otherMatrix.getRows()) {
             throw new IllegalArgumentException("Не совместимое кол-во строк");
         }
-        if (this.getColumns() != otherMatrix.getColumns()){
+        if (this.getColumns() != otherMatrix.getColumns()) {
             throw new IllegalArgumentException("Не совместимое кол-во столбцов");
         }
         if (otherMatrix == null) {
@@ -90,13 +91,20 @@ public class Matrix implements IMatrix{
     @Override
     public IMatrix mul(IMatrix otherMatrix) throws IllegalArgumentException, NullPointerException {
         if (this.getColumns() != otherMatrix.getRows()) {
-            System.out.println("Матрицы умножать нельзя!Кол-во столбцов первой матрицы не равно кол-ву строк второй матрицы");
-            return null;
+            throw new IllegalArgumentException("Матрицы умножать нельзя!Кол-во столбцов первой матрицы не равно кол-ву строк второй матрицы");
+        }
+        if (this.getRows() != otherMatrix.getColumns()) {
+            throw new IllegalArgumentException("Матрицы умножать нельзя!Кол-во строк первой матрицы не равно кол-ву столбцов второй матрицы");
+        }
+        if (otherMatrix == null) {
+            throw new NullPointerException("Вторая матрица не должна быть null");
         }
         Matrix result = new Matrix(this.getRows(), this.getColumns());
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                result.setValueAt(i, j, this.getValueAt(i, j) * otherMatrix.getValueAt(i, j));
+                for (int k = 0; k < otherMatrix.getColumns(); k++) {
+                    result.setValueAt(i, j, this.getValueAt(i, k) * otherMatrix.getValueAt(j, k));
+                }
             }
         }
         return result;
@@ -131,12 +139,14 @@ public class Matrix implements IMatrix{
     }
 
     @Override
-    public void fillMatrix(double value) {
+    public IMatrix fillMatrix(double value) {
+        Matrix result = new Matrix(getRows(), getColumns());
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                this.numbers[i][j] = value;
+                result.setValueAt(i, j, value);
             }
         }
+        return result;
     }
 
     @Override
@@ -147,7 +157,7 @@ public class Matrix implements IMatrix{
     @Override
     public boolean isNullMatrix() {
         for (int i = 0; i < this.getRows(); i++) {
-            for (int j = 0; j < this.getColumns();j++) {
+            for (int j = 0; j < this.getColumns(); j++) {
                 if (this.numbers[i][j] != 0) {
                     System.out.println("Матрица не является нулевой!");
                     return false;
@@ -172,8 +182,9 @@ public class Matrix implements IMatrix{
                     System.out.println("Матрица не является единичной!");
                     return false;
                 } else {
-                    System.out.println("Матрица является единичной!");
-                    return true;
+                    if(numbers[i][j] != 0){
+                        return false;
+                    }
                 }
             }
         }
@@ -187,7 +198,7 @@ public class Matrix implements IMatrix{
                 if (this.getRows() == this.getColumns()) {
                     System.out.println("Матрица является квадратной!");
                     return true;
-                }else {
+                } else {
                     System.out.println("Матрица не является квадратной!");
                     return false;
                 }
